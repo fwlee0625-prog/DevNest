@@ -1,8 +1,45 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState, FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/lib/toast';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login, loading } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+
+    if (!username || !password) {
+      setError('请输入用户名和密码');
+      return;
+    }
+
+    const result = await login(username, password);
+
+    if (result.success) {
+      // 显示成功提示
+      toast.success('登录成功！');
+
+      // 登录成功，延迟跳转
+      setTimeout(() => {
+        router.push('/');
+      }, 500);
+    } else {
+      setError(result.error || '登录失败，请检查用户名和密码');
+      toast.error('登录失败，请检查用户名和密码');
+    }
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-white px-4 py-12 sm:px-6 lg:px-8 dark:bg-black">
       {/* Top Left Logo */}
@@ -21,11 +58,18 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
           <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-            登录 Vercel
+            登录
           </h2>
         </div>
 
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {/* 错误提示 */}
+          {error && (
+            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400">
+              {error}
+            </div>
+          )}
+
           <div className="space-y-4 rounded-md shadow-sm">
             <div>
               <label htmlFor="username" className="sr-only">
@@ -38,11 +82,14 @@ export default function LoginPage() {
                 autoComplete="username"
                 required
                 placeholder="用户名"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={loading}
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Password
+                密码
               </label>
               <Input
                 id="password"
@@ -51,42 +98,29 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 required
                 placeholder="密码"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
           </div>
+
+          {/* 提示信息 */}
+          {/* <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+            测试账号：admin / admin123
+          </div> */}
 
           <div>
             <Button
               type="submit"
               className="w-full bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
               size="lg"
+              disabled={loading}
             >
-              登录
+              {loading ? '登录中...' : '登录'}
             </Button>
           </div>
         </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-700" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500 dark:bg-black">
-                没有账号？
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-6 flex justify-center">
-            <Link
-              href="#"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
-            >
-              注册
-            </Link>
-          </div>
-        </div>
 
         <div className="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
           <Link href="#" className="hover:underline">

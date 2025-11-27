@@ -2,10 +2,17 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { UserMenu } from '@/components/ui/UserMenu';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/lib/toast';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +22,37 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      // 清除本地存储
+      localStorage.removeItem('supabase.auth.token');
+      sessionStorage.clear();
+
+      // 执行登出
+      const result = await logout();
+
+      if (result.success) {
+        // 显示成功提示
+        toast.success('已成功退出登录');
+
+        // 延迟跳转，让用户看到提示
+        setTimeout(() => {
+          router.push('/');
+        }, 500);
+      } else {
+        // 显示错误提示
+        toast.error(result.error || '退出登录失败，请重试');
+      }
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      toast.error('退出登录时发生错误');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <header
@@ -36,6 +74,8 @@ export default function Header() {
               Vercel Style
             </span>
           </Link>
+          {/* 只在登录后显示导航链接 */}
+
           <nav className="hidden md:block">
             <ul className="flex items-center gap-6">
               <li>
@@ -46,30 +86,16 @@ export default function Header() {
                   产品
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
-                >
-                  解决方案
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
-                >
-                  资源
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
-                >
-                  定价
-                </Link>
-              </li>
+              {isAuthenticated && (
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
+                  >
+                    应用管理
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
@@ -77,9 +103,19 @@ export default function Header() {
           <Button href="#" variant="outline" size="sm">
             联系我们
           </Button>
-          <Button href="/login" size="sm">
-            登录
-          </Button>
+
+          {/* 根据登录状态显示不同的按钮 */}
+          {isAuthenticated && user ? (
+            <UserMenu
+              user={user}
+              onLogout={handleLogout}
+              isLoggingOut={isLoggingOut}
+            />
+          ) : (
+            <Button href="/login" size="sm">
+              登录
+            </Button>
+          )}
         </div>
       </div>
     </header>
