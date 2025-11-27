@@ -43,7 +43,7 @@ export default function Header() {
                   href="#"
                   className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
                 >
-                  Products
+                  产品
                 </Link>
               </li>
               <li>
@@ -51,7 +51,7 @@ export default function Header() {
                   href="#"
                   className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
                 >
-                  Solutions
+                  解决方案
                 </Link>
               </li>
               <li>
@@ -59,7 +59,7 @@ export default function Header() {
                   href="#"
                   className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
                 >
-                  Resources
+                  资源
                 </Link>
               </li>
               <li>
@@ -67,24 +67,18 @@ export default function Header() {
                   href="#"
                   className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
                 >
-                  Pricing
+                  定价
                 </Link>
               </li>
             </ul>
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Link
-            href="#"
-            className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
-          >
-            Log In
-          </Link>
           <Button href="#" variant="outline" size="sm">
-             Contact
+            联系我们
           </Button>
-          <Button href="#" size="sm">
-            Sign Up
+          <Button href="/login" size="sm">
+            登录
           </Button>
         </div>
       </div>
