@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@/types/auth';
-import { ConfirmDialog } from './ConfirmDialog';
+import { ConfirmDialog } from '../ConfirmDialog';
 
 interface UserMenuProps {
   user: User;
@@ -146,3 +146,4 @@ export function UserMenu({
     </div>
   );
 }
+

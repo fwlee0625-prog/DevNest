@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from './Button';
+import { Button } from '../Button';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -161,3 +161,4 @@ export function ConfirmDialog({
     </div>
   );
 }
+
