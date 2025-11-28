@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { UserMenu } from '@/components/ui/UserMenu';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,6 +13,7 @@ export default function Header() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +23,14 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // 判断链接是否激活
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === path;
+    }
+    return pathname?.startsWith(path);
+  };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -77,20 +86,28 @@ export default function Header() {
           {/* 只在登录后显示导航链接 */}
 
           <nav className="hidden md:block">
-            <ul className="flex items-center gap-6">
+            <ul className="flex items-center gap-2">
               <li>
                 <Link
-                  href="#"
-                  className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
+                  href="/projects"
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                    isActive('/projects')
+                      ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-black dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white'
+                  }`}
                 >
-                  产品
+                  项目
                 </Link>
               </li>
               {isAuthenticated && (
                 <li>
                   <Link
-                    href="#"
-                    className="text-sm font-medium text-gray-600 transition-colors hover:text-black dark:text-gray-400 dark:hover:text-white"
+                    href="/admin/projects"
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                      isActive('/admin')
+                        ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-black dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white'
+                    }`}
                   >
                     应用管理
                   </Link>
