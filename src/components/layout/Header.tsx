@@ -80,7 +80,7 @@ export default function Header() {
               <path d="M12 2L2 19.7778H22L12 2Z" />
             </svg>
             <span className="text-lg font-bold text-gray-900 dark:text-white">
-              Vercel Style
+              独立开发者工作室
             </span>
           </Link>
           {/* 只在登录后显示导航链接 */}
@@ -99,6 +99,22 @@ export default function Header() {
                   项目
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="#"
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                    isActive('/blog')
+                      ? 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-black dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white'
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // 博客功能即将上线
+                  }}
+                >
+                  博客
+                </Link>
+              </li>
               {isAuthenticated && (
                 <li>
                   <Link
@@ -109,7 +125,7 @@ export default function Header() {
                         : 'text-gray-600 hover:bg-gray-50 hover:text-black dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white'
                     }`}
                   >
-                    应用管理
+                    管理
                   </Link>
                 </li>
               )}
