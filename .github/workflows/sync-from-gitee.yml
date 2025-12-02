@@ -1,12 +1,11 @@
 name: Sync from Gitee
 
 on:
-  # 每天 UTC 时间 2:00 自动同步（可调整）
-  schedule:
-    - cron: '0 2 * * *'
-
   # 也支持手动触发
   workflow_dispatch:
+
+  repository_dispatch: # 新增：监听手动触发事件
+    types: [gitee-push] # 事件类型自定义为 gitee-push
 
 jobs:
   sync:
